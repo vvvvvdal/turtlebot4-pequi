@@ -38,8 +38,12 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# YOLOv8 (Ultralytics) — instalado como root antes de trocar de usuário
+# YOLOv8 (Ultralytics): instalado como root antes de trocar de usuário
 RUN pip3 install ultralytics
+
+# Uso de GPU NVIDIA (caso você tenha): Gráficos para Gazebo/RViz e Compute para YOLO
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=all
 
 # Usuário não-root
 RUN useradd -m --uid ${user_id} dockeruser
