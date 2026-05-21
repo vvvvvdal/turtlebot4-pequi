@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # YOLOv8 (Ultralytics): instalado como root antes de trocar de usuário
-RUN pip3 install ultralytics
+RUN pip3 install ultralytics "numpy<2"
 
 # Uso de GPU NVIDIA (caso você tenha): Gráficos para Gazebo/RViz e Compute para YOLO
 ENV NVIDIA_VISIBLE_DEVICES=all
