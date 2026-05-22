@@ -8,12 +8,38 @@ from geometry_msgs.msg import Twist
 
 DISTANCIA_MINIMA = 1.5
 
+class Visao_YOLO:
+    def __init__(self):
+        self.modelo_yolo = YOLO('yolov8n.pt')
+
+    def processar_imagem(self, imagem_cv2):
+        # 2. Inferencia da IA do modelo YOLO
+        resultados = self.modelo_yolo(imagem_cv2)
+        imagem_desenhada = resultados[0].plot()
+
+        pessoa = False
+        x_centro = 0
+        y_centro = 0
+
+        # 3. Processamento de coordenadas
+        for caixa in resultados[0].boxes:
+            classe = int(caixa.cls[0].item())
+
+            if classe == 0: # Pessoa (person) tem id de classe 0 
+                x_centro = int(caixa.xywh[0][0].item())
+                y_centro = int(caixa.xywh[0][1].item())
+                pessoa = True
+                break
+
+        return pessoa, x_centro, y_centro, imagem_desenhada
+
+
 class Olho_Do_Robo(Node):
     def __init__(self) -> None:
         super().__init__('Olho_Do_Robo')
 
         self.bridge = CvBridge()
-        self.modelo_yolo = YOLO('yolov8n.pt')
+        self.visao = VisaoYOLO()
 
         # Ouvinte da camera rgb (visão)
         self.subscription_velocidade = self.create_subscription(
@@ -42,26 +68,10 @@ class Olho_Do_Robo(Node):
         # 1. Traducao da imagem
         imagem_cv2 = self.bridge.imgmsg_to_cv2(img, "bgr8")
 
-        # 2. Inferencia da IA do modelo YOLO
-        resultados = self.modelo_yolo(imagem_cv2)
-        imagem_desenhada = resultados[0].plot()
-
-        pessoa = False
-
-        # 3. Processamento de coordenadas
-        if self.mapa_profundidade is not None:
-            for caixa in resultados[0].boxes:
-                classe = int(caixa.cls[0].item())
-
-                if classe == 0: # Pessoa (person) tem id de classe 0 
-                    x_centro = int(caixa.xywh[0][0].item())
-                    y_centro = int(caixa.xywh[0][1].item())
-
-                    pessoa = True
-                    break
+        pessoa, x_centro, y_centro, imagem_desenhada = self.visao.processar_imagem(imagem_cv2)
 
         # 4. Controle de seguranca ao detectar pessoa proxima
-        if pessoa:
+        if pessoa and self.mapa_profundidade is not None:
             distancia_atual = self.calcular_distancia(y_centro, x_centro)
 
             # Trava de segurança: 0.0 geralmente significa erro de leitura do sensor (camera cega)
@@ -110,9 +120,10 @@ def main(args=None):
     try:
         rclpy.spin(olho_do_robo)
     except KeyboardInterrupt:
-        pass # Fecha limpo quando aperta CTRL+C no terminal
+        pass # Fecha quando aperta CTRL+C no terminal
     finally:
         olho_do_robo.destroy_node()
+        cv2.destroyAllWindows()
         rclpy.shutdown()
 
 if __name__ == "__main__":
