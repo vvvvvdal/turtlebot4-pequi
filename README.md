@@ -112,3 +112,19 @@ docker exec -it tb4_simulador bash
 ```bash
 python3 ws/src/yolo.py
 ```
+
+---
+
+## Imagens da simulação
+
+## Simulação no Gazebo com mapeamento SLAM e NAV2 no RVIZ2 com visão da câmera no YOLOv8
+![Visão geral do sistema](imgs/gazebo-rviz2-yolov8.png)
+
+## Simulação no Gazebo com detecção de pessoa via câmera do robô no YOLOv8. Robô executa função de recuar ao chegar muito próximo da pessoa.
+![Detecção de pessoa com YOLOv8](imgs/yolov8-person.png)
+
+## Simulação no Gazebo com rota em linha reta calculada pelo NAV2
+![Rota em linha reta](imgs/gazebo-rviz2-nav2.png)
+
+## Simulação no Gazebo com rota recalculada contornando obstáculo cúbico pelo NAV2
+![Rota recalculada contornando obstáculo](imgs/gazebo-rviz2-nav2-route.png)
