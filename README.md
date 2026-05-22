@@ -3,6 +3,9 @@
 O objetivo deste projeto foi pegar o TurtleBot4 (base iRobot Create 3) e fazer um upgrade real na arquitetura de software e hardware dele. A ideia foi resolver gargalos de processamento substituindo a placa original e implementar um sistema de navegação autônoma onde o robô não apenas desvia de paredes cegas, mas usa visão computacional (YOLOv8) para identificar objetos e tomar decisões de segurança em tempo real.
 
 ---
+Documentos no Drive
+[![Google Drive](https://img.shields.io/badge/Google%20Drive-Documentos-blue?logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/12bSoTxOGh3vUiAucfdEUXaNt9Qit2mPP)
+---
 
 ## Estrutura do Repositório
 
