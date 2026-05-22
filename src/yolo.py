@@ -39,7 +39,7 @@ class Olho_Do_Robo(Node):
         super().__init__('Olho_Do_Robo')
 
         self.bridge = CvBridge()
-        self.visao = VisaoYOLO()
+        self.visao = Visao_YOLO()
 
         # Ouvinte da camera rgb (visão)
         self.subscription_velocidade = self.create_subscription(
@@ -62,7 +62,7 @@ class Olho_Do_Robo(Node):
         self.subscription_profundidade # Previne aviso de variável não utilizada
 
         # Falante do robo (controle de rodas)
-        self.publisher_velocidade = self.create_publisher(Twist, '/turtlebot1/cmd_vel', 10)
+        self.publisher_velocidade = self.create_publisher(Twist, '/turtlebot1/cmd_vel_vision', 10)
         
     def ouvinte_callback(self, img):
         # 1. Traducao da imagem

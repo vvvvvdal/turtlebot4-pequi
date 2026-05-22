@@ -88,7 +88,7 @@ ros2 launch turtlebot4_navigation slam.launch.py sync:=true namespace:=turtlebot
 - "params_file:=/home..." permite o uso do arquivo de configuração do Nav2, que teve as distancias de alcance e desenho do LiDAR alteradas para poder identificar/apagar objetos de modo mais eficiente
 ```bash
 docker exec -it tb4_simulador bash
-ros2 launch turtlebot4_navigation nav2.launch.py namespace:=turtlebot1 params_file:=/home/dockeruser/ws/src/nav2.yaml
+ros2 launch turtlebot4_navigation nav2.launch.py namespace:=turtlebot1 params_file:=/home/dockeruser/ws/src/nav2.yaml cmd_vel:=cmd_vel_nav
 ```
 
 ### Terminal 4: RViz2
@@ -111,6 +111,14 @@ docker exec -it tb4_simulador bash
 - Acessando o arquivo .py através do volume mapeado em "ws"
 ```bash
 python3 ws/src/yolo.py
+```
+
+### Terminal 6: twist_mux
+- Para evitar conflitos de movimento, como o robô travar no chão ao receber 2 comandos de movimentação diferentes (que podem ser recebidos pelo teclado, Nav2 ou YOLOv8).
+- Esse twist_mux define prioridades. Recebendo comandos de movimento do Nav2 e do YOLOv8 ao mesmo tempo, o robô executa o do YOLOv8, por ter uma prioridade maior.
+```bash
+docker exec -it tb4_simulador bash
+ros2 run twist_mux twist_mux --ros-args --params-file /home/dockeruser/ws/src/twist_mux.yaml -r cmd_vel_out:=/turtlebot1/cmd_vel
 ```
 
 ---
