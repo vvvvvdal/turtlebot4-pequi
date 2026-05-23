@@ -9,10 +9,11 @@ Documentos no Drive
 
 ## Estrutura do Repositório
 
-O repositório está dividido nas duas frentes de engenharia do projeto. Cada pasta tem seu próprio README detalhado de execução e montagem:
+O repositório está dividido nas três frentes de engenharia do projeto. Cada pasta tem seu próprio README detalhado de execução e montagem:
 
 * **[Software](./Software/)**: Contém a arquitetura ROS 2, configurações do Docker, mapeamento (SLAM), navegação (Nav2) e o script de visão (YOLOv8).
 * **[Estrutural](./Estrutural/)**: Contém as modelagens 3D, projetos do suporte customizado e parâmetros de impressão para o upgrade físico do robô.
+* **[Hardware](./Hardware/)**: Documentação de Hardware, Engenharia e Integração de Sistemas.Contém o projeto da PCB, esquemáticos, lista de componentes e detalhes de montagem do circuito de controle.
 
 ---
 
@@ -45,6 +46,20 @@ Para o robô aguentar rodar a visão computacional e o Nav2 sem engasgar, trocam
 <img width="800" src="https://github.com/user-attachments/assets/0864b150-c884-4562-87a3-d0839fac3c56" alt="Renderização CAD do novo suporte com Jetson e XL4016">
 
 Os arquivos CAD (.STEP, .SLDPRT) e o detalhamento da montagem estão no **[Guia Estrutural](./Estrutural/README.md)**.
+
+---
+
+## Visão Geral: Hardware
+
+A eletrônica de expansão do robô foi centralizada em uma Shield/HAT customizada (100 mm × 79 mm), projetada para acoplamento direto via *stacking headers* sobre os 40 pinos da NVIDIA Jetson Orin Nano. A arquitetura elimina microcontroladores secundários no MVP para mitigar latências de barramento.
+
+**Principais implementações:**
+* **Gerenciamento de Potência Unificado:** Alimentação total do sistema a partir da bateria nativa de 14.4V da base Create 3, utilizando um regulador chaveado Buck XL4016 externo para a linha de +5V periférica e um robusto banco capacitivo Low-ESR para proteção contra quedas de tensão (*voltage sags*).
+* **Telemetria Absoluta de Bateria:** Monitoramento de tensão em tempo real por meio de um divisor resistivo acoplado ao conversor analógico-digital **ADS1115 (16-bits I2C)**, fornecendo cálculo preciso de SoC% e prevenção de desligamentos críticos (<11.5V).
+* **Controle de Acesso e Autenticação:** Integração de um módulo RFID **MFRC522 operando via barramento SPI síncrono**, atuando como validação biométrica de operadores autorizados em ambiente fabril.
+* **Monitoramento Ambiental Ativo:** Sensoriamento de fumaça e gases inflamáveis com o **MQ-2**, utilizando condicionamento de sinal analógico via ADC e digital conectado diretamente à GPIO da Jetson com tratamento de interrupção por hardware.
+
+O esquemático elétrico completo, lista de materiais (BOM), mapa de Netlist e orientações de soldagem estão no **[Guia de Hardware](./Hardware/README.md)**.
 
 ---
 
