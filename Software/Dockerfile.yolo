@@ -1,0 +1,32 @@
+FROM ros:humble-ros-base
+
+ARG user_id=1000
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Dependências básicas do sistema e OpenCV para manipulação de imagem
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    python3-opencv \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalação do PyTorch, YOLOv8 e ferramentas de IA 
+RUN pip3 install --no-cache-dir ultralytics "numpy<2"
+
+# Configuração focada no poder de processamento/Inferência da GPU NVIDIA
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+RUN useradd -m --uid ${user_id} dockeruser
+USER dockeruser
+WORKDIR /home/dockeruser
+ENV HOME=/home/dockeruser
+ENV PATH="/home/dockeruser/.local/bin:${PATH}"
+
+ENV PYTHONUNBUFFERED=1
+
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+
+CMD ["bash"]

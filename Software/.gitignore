@@ -173,4 +173,14 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
-# End of https://www.toptal.com/developers/gitignore/api/python
+# ==========================================
+# Regras Customizadas para o Projeto TurtleBot4
+# ==========================================
+
+# Ignorar pastas de build e logs locais do ROS 2
+install/
+log/
+
+# Ignorar os arquivos pesados de weights da IA (YOLOv8)
+*.pt
+*.onnx
